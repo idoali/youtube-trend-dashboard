@@ -28,6 +28,9 @@ df['category_id'] = [category[x] if x in category_nums else "Unknown" for x in d
 
 category_ids = pd.DataFrame(list(df['category_id'].value_counts().keys()) + ['All Categories']).sort_values(0)[0].tolist()
 
+# Mengubah nilai NA menjadi 0
+df.loc[:, ['like', 'dislike', 'view', 'comment']] = df.loc[:, ['like', 'dislike', 'view', 'comment']].fillna(0)
+
 # Menambahkan kolom waktu yang lebih spesifik
 df['trending_date'] = df['trending_time'].dt.date
 
@@ -58,7 +61,7 @@ selected_data = youtube_unique[
     (youtube_unique['trending_date'] <= selected_end_date)]
 
 # Input kategori
-if (selected_category != "All Categories"):
+if selected_category != "All Categories":
     selected_data = selected_data[selected_data["category_id"] == selected_category]
 
 # bar chart
@@ -76,7 +79,7 @@ st.plotly_chart(fig)
 
 # scatter plot
 st.header(':bulb: Engagement')
-metric_choices = ['like', 'dislike', 'favorite', 'comment']
+metric_choices = ['like', 'dislike', 'comment']
 col1, col2 = st.columns(2)
 var_x = col1.selectbox(label='Horizontal Axis',
                        options=metric_choices, index=0)
